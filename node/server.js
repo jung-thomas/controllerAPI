@@ -8,7 +8,7 @@ var server = require("http").createServer();
 let https = require("https");
 https.globalAgent.options.ca = xsenv.loadCertificates();
 global.__base = __dirname + "/";
-global.__controller = "https://api.hanapm.local.com:30033/v2/";
+global.__controller = JSON.parse(process.env.destinations)[0].url;
 
 //Initialize Express App for XSA UAA and HDBEXT Middleware
 var passport = require("passport");

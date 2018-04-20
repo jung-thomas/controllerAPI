@@ -9,16 +9,15 @@ module.exports = function() {
 
 	//Hello Router
 	app.get("/", (req, res) => {
-		let output = `Node.js based Controller API Examples`;
-		/*			<a href="${req.baseUrl}/example1">/example1</a> - Simple Database Select - In-Line Callbacks</br> 
-					<a href="${req.baseUrl}/example2">/example2</a> - Simple Database Select - Async Waterfall</br> 
-					<a href="${req.baseUrl}/example3">/example3</a> - Call Stored Procedure</br> 
-					<a href="${req.baseUrl}/example4/1">/example4</a> - Call Stored Procedure with Input = Partner Role 1 </br> 
-					<a href="${req.baseUrl}/example4/2">/example4</a> - Call Stored Procedure with Input = Partner Role 2 </br> 
-					<a href="${req.baseUrl}/example5">/example5</a> - Call Two Stored Procedures in Parallel Because We Can!</br> 
-					<a href="${req.baseUrl}/whoAmI">/whoAmI</a> - Look at the session information</br> 
-					<a href="${req.baseUrl}/hdb">/hdb</a> - Small DB example - port of hdb.xsjs</br> 
-					<a href="${req.baseUrl}/os">/os</a> - Operating System Information - port of os.xsjs</br>`;*/
+		let output = `Node.js based Controller API Examples</br>
+					<a href="${req.baseUrl}/whoAmI">/whoAmI</a> - User Details and Auth Information</br> 
+					<a href="${req.baseUrl}/env">/env</a> - Current Application Environment</br> 
+					<a href="${req.baseUrl}/org">/org</a> - Current Organization</br> 
+					<a href="${req.baseUrl}/space">/space</a> - Current Space</br> 
+					<a href="${req.baseUrl}/controller">/controller</a> - Controller API Info</br> 
+					<a href="${req.baseUrl}/userinfo">/userinfo</a> - Detailed User Info including Security Context</br> 
+					<a href="${req.baseUrl}/info">/info</a> - Controller Info API</br> 
+					<a href="${req.baseUrl}/getOrgs">/getOrgs</a> - Controller API: organizations</br> `;
 		res.type("text/html").status(200).send(output);
 	});
 
@@ -49,7 +48,6 @@ module.exports = function() {
 		res.type("application/json").status(200).send(JSON.stringify(obj));
 	});
 
-
 	app.get("/userinfo", function(req, res) {
 		let xssec = require("@sap/xssec");
 		let xsenv = require("@sap/xsenv");
@@ -64,9 +62,7 @@ module.exports = function() {
 			"scopes": [],
 			"identity-zone": req.authInfo.identityZone
 		};
-		if (req.headers.authorization && req.headers.authorization.split(" ")[0] === "Bearer") {
-			accessToken = req.headers.authorization.split(" ")[1];
-		}
+		accessToken = require(global.__base + "utils/auth").getAccessToken(req);
 		let uaa = xsenv.getServices({
 			uaa: {
 				tag: "xsuaa"
@@ -88,8 +84,30 @@ module.exports = function() {
 	app.get("/info", (req, res) => {
 		let request = require("request");
 		let options = {
-			url: global.__controller + "info"
+			url: global.__controller + "/v2/info"
 		};
+		request.get(
+			options,
+			function(error, response, body) {
+				if (error) {
+					console.log(error.toString());
+					res.type("text/html").status(200).send(error.toString());
+					return;
+				}
+				res.type("application/json").status(200).send(body);
+			}
+		);
+	});
+
+	app.get("/getOrgs", (req, res) => {
+		let request = require("request");
+		var options = {
+			method: "GET",
+			json: true,
+			url: global.__controller + "/v2/organizations",				
+			auth: {}
+		};
+		options.auth.bearer = require(global.__base + "utils/auth").getAccessToken(req);
 		request.get(
 			options,
 			function(error, response, body) {

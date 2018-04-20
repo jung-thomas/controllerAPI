@@ -29,14 +29,17 @@ modules:
          url: ${default-url}
    requires:
     - name: controller-api-ex-uaa
-    - name: controller
+    - name: controller-config
       group: destinations
       properties:
-        name: controller
-        url: ${controller-url}  
-        forwardAuthToken: true    
+        name: controller-config
+        url: ~{url}
+        forwardAuthToken: true   
 resources:
  - name: controller-api-ex-uaa
    type: com.sap.xs.uaa
- - name: controller
- 
+   parameters:
+     config-path: ./xs-security.json   
+ - name: controller-config
+   properties:
+     url: "https://api.hanapm.local.com:30033" #"${controller-url}" # - Removed for testing in Web IDE, replace for real deployment

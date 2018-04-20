@@ -1,1 +1,1 @@
-xs create-service xsuaa space controller-api-ex-uaa
+xs create-service xsuaa space controller-api-ex-uaa -c xs-security.json   
