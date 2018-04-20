@@ -69,7 +69,6 @@ module.exports = function() {
 					method: "GET",
 					json: true,
 					url: JSON.parse(body).authorizationEndpoint  + "/sap/rest/user/name/" + req.params.user_id,
-	//				url: JSON.parse(body).authorizationEndpoint  + "/sap/rest/userinfo",
 					auth: {}
 				};
 				console.log(options.url.toString());
