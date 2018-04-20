@@ -88,5 +88,44 @@ module.exports = function() {
 		);
 
 	});
+	
+	app.get("/uaa2/rolecollections", (req, res) => {
+		let request = require("request");
+		let options = {
+			url: global.__controller + "/v2/info"
+		};
+		request.get(
+			options,
+			function(error, response, body) {
+				if (error) {
+					console.log(error.toString());
+					res.type("text/html").status(200).send(error.toString());
+					return;
+				}
+
+				var options = {
+					method: "GET",
+					json: true,
+					url: JSON.parse(body).authorizationEndpoint  + "/sap/rest/authorization/rolecollections",
+					auth: {}
+				};
+				console.log(options.url.toString());
+				options.auth.bearer = require(global.__base + "utils/auth").getAccessToken(req);
+				request.get(
+					options,
+					function(error, response, body) {
+						if (error) {
+							console.log(error.toString());
+							res.type("text/html").status(200).send(error.toString());
+							return;
+						}
+						res.type("application/json").status(200).send(body);
+					}
+				);
+			}
+		);
+
+	});
+	
 	return app;
 };
