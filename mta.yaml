@@ -1,0 +1,42 @@
+ID: controllerAPI
+_schema-version: '2.0'
+version: 0.0.1
+
+modules:
+ - name: web
+   type: html5
+   path: web
+   parameters:
+      host: controller-api-ex
+      register-service-url: true
+      service-name: controller-api-ex
+      service-url: '${default-url}'
+   requires:
+    - name: controller-api-ex-uaa
+    - name: node_api
+      group: destinations
+      properties:
+        name: node-backend
+        url: ~{url}
+        forwardAuthToken: true  
+        
+ - name: node
+   type: nodejs
+   path: node
+   provides:
+    - name: node_api
+      properties:
+         url: ${default-url}
+   requires:
+    - name: controller-api-ex-uaa
+    - name: controller
+      group: destinations
+      properties:
+        name: controller
+        url: ${controller-url}  
+        forwardAuthToken: true    
+resources:
+ - name: controller-api-ex-uaa
+   type: com.sap.xs.uaa
+ - name: controller
+ 
