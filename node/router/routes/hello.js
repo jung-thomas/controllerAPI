@@ -1,11 +1,11 @@
 /*eslint no-console: 0, no-unused-vars: 0, no-shadow: 0, new-cap: 0*/
 /*eslint-env node, es6 */
 "use strict";
-var express = require("express");
-var async = require("async");
-
+const express = require("express");
+const request = require("request-promise-native");
+		
 module.exports = function() {
-	var app = express.Router();
+	const app = express.Router();
 
 	//Hello Router
 	app.get("/", (req, res) => {
@@ -17,8 +17,15 @@ module.exports = function() {
 					<a href="${req.baseUrl}/controller">/controller</a> - Controller API Info</br> 
 					<a href="${req.baseUrl}/userinfo">/userinfo</a> - Detailed User Info including Security Context</br> 
 					<a href="${req.baseUrl}/info">/info</a> - Controller Info API</br> 
-					<a href="${req.baseUrl}/getOrgs">/getOrgs</a> - Controller API: organizations</br> `;
-		res.type("text/html").status(200).send(output);
+					<a href="${req.baseUrl}/getOrgs">/getOrgs</a> - Controller API: organizations</br>
+				    <a href="${req.baseUrl}/users">/users/</a> - Controller API: users</br> 
+				    <a href="${req.baseUrl}/users/<guid>">/users/guid</a> - Controller API: users, per user details</br> 
+				    <a href="${req.baseUrl}/users/uaa/<user_id>">/users/uaa/user_id</a> - UAA API: user details per ID</br> 
+				    <a href="${req.baseUrl}/users/uaa2/rolecollections/">/users/uaa2/rolecollections/</a> - UAA API: Role Collections</br> 
+				    <a href="${req.baseUrl}/users/uaa2/rolecollections/<roleCollectionName>">/users/uaa2/rolecollections/roleCollectionName</a> - UAA API: Role Collection Details</br> 
+				    <a href="${req.baseUrl}/users/uaa2/rolecollections/<roleCollectionName>/roles">/users/uaa2/rolecollections/roleCollectionName/roles</a> - UAA API: Role Collection->Role</br> `;
+				    
+		return res.type("text/html").status(200).send(output);
 	});
 
 	app.get("/whoAmI", (req, res) => {
@@ -26,26 +33,26 @@ module.exports = function() {
 		let result = JSON.stringify({
 			userContext: userContext
 		});
-		res.type("application/json").status(200).send(result);
+		return res.type("application/json").status(200).send(result);
 	});
 
 	app.get("/env", (req, res) => {
-		res.type("application/json").status(200).send(JSON.stringify(process.env));
+		return res.type("application/json").status(200).send(JSON.stringify(process.env));
 	});
 
 	app.get("/org", (req, res) => {
 		let VCAP = JSON.parse(process.env.VCAP_APPLICATION);
-		res.type("application/json").status(200).send(JSON.stringify(VCAP.organization_name));
+		return res.type("application/json").status(200).send(JSON.stringify(VCAP.organization_name));
 	});
 
 	app.get("/space", (req, res) => {
 		let VCAP = JSON.parse(process.env.VCAP_APPLICATION);
-		res.type("application/json").status(200).send(JSON.stringify(VCAP.space_name));
+		return res.type("application/json").status(200).send(JSON.stringify(VCAP.space_name));
 	});
 
 	app.get("/controller", (req, res) => {
 		var obj = JSON.parse(process.env.destinations);
-		res.type("application/json").status(200).send(JSON.stringify(obj));
+		return res.type("application/json").status(200).send(JSON.stringify(obj));
 	});
 
 	app.get("/userinfo", function(req, res) {
@@ -78,47 +85,37 @@ module.exports = function() {
 			console.log("Scope checked successfully");
 		});
 
-		res.status(200).json(userInfo);
+		return res.type("application/json").status(200).json(userInfo);
 	});
 
-	app.get("/info", (req, res) => {
-		let request = require("request");
+	app.get("/info", async (req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
-		request.get(
-			options,
-			function(error, response, body) {
-				if (error) {
-					console.log(error.toString());
-					res.type("text/html").status(200).send(error.toString());
-					return;
-				}
-				res.type("application/json").status(200).send(body);
-			}
-		);
+		try{
+			let body = await request.get(options);
+			return res.type("application/json").status(200).send(body);
+		} catch(err){
+			console.log(err.toString());
+			return res.type("text/html").status(500).send(err.toString());
+		}
 	});
 
-	app.get("/getOrgs", (req, res) => {
-		let request = require("request");
-		var options = {
+	app.get("/getOrgs", async (req, res) => {
+		let options = {
 			method: "GET",
 			json: true,
 			url: global.__controller + "/v2/organizations",				
 			auth: {}
 		};
 		options.auth.bearer = require(global.__base + "utils/auth").getAccessToken(req);
-		request.get(
-			options,
-			function(error, response, body) {
-				if (error) {
-					console.log(error.toString());
-					res.type("text/html").status(200).send(error.toString());
-					return;
-				}
-				res.type("application/json").status(200).send(body);
-			}
-		);
+		try  {
+			let body = await request.get(options);
+			return res.type("application/json").status(200).send(body);
+		} catch(err){
+			console.log(err.toString());
+			return res.type("text/html").status(500).send(err.toString());
+		} 
 	});
 
 	return app;
