@@ -41,7 +41,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa/:user_id", async(req, res) => {
+	app.get("/uaa/id/:user_id", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -50,7 +50,7 @@ module.exports = function() {
 			let optionsInner = {
 				method: "GET",
 				json: true,
-				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/user/name/" + req.params.user_id,
+				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/user/id/" + req.params.user_id,
 				auth: {}
 			};
 			console.log(optionsInner.url.toString());
@@ -63,7 +63,87 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/rolecollections/", async (req, res) => {
+	app.get("/uaa/name/:username", async(req, res) => {
+		let options = {
+			url: global.__controller + "/v2/info"
+		};
+		try {
+			let body = await request.get(options);
+			let optionsInner = {
+				method: "GET",
+				json: true,
+				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/user/name/" + req.params.username,
+				auth: {}
+			};
+			console.log(optionsInner.url.toString());
+			optionsInner.auth.bearer = require(global.__base + "utils/auth").getAccessToken(req);
+			let bodyInner = await request.get(optionsInner);
+			return res.type("application/json").status(200).send(bodyInner);
+		} catch (err) {
+			console.log(err.toString());
+			return res.type("text/html").status(500).send(err.toString());
+		}
+	});
+
+	app.get("/uaa2/names", async(req, res) => {
+		let options = {
+			url: global.__controller + "/v2/info"
+		};
+		try {
+			let body = await request.get(options);
+			let optionsInner = {
+				method: "GET",
+				json: true,
+				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/user/names/",
+				auth: {}
+			};
+			console.log(optionsInner.url.toString());
+			optionsInner.auth.bearer = require(global.__base + "utils/auth").getAccessToken(req);
+			let bodyInner = await request.get(optionsInner);
+			return res.type("application/json").status(200).send(bodyInner);
+		} catch (err) {
+			console.log(err.toString());
+			return res.type("text/html").status(500).send(err.toString());
+		}
+	});
+
+	app.get("/uaa2/names/all", async(req, res) => {
+		let options = {
+			url: global.__controller + "/v2/info"
+		};
+		try {
+			let body = await request.get(options);
+			let optionsInner = {
+				method: "GET",
+				json: true,
+				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/user/names/",
+				auth: {}
+			};
+			console.log(optionsInner.url.toString());
+			optionsInner.auth.bearer = require(global.__base + "utils/auth").getAccessToken(req);
+			let bodyInner = await request.get(optionsInner);
+			//loop over bodyInner
+			let names = JSON.parse(JSON.stringify(bodyInner));
+			let output = [];
+			for (let item of names) {
+				let optionsName = {
+					method: "GET",
+					json: true,
+					url: JSON.parse(body).authorizationEndpoint + "/sap/rest/user/name/" + item,
+					auth: {}
+				};
+				optionsName.auth.bearer = optionsInner.auth.bearer;
+				let details = await request.get(optionsName);
+				output.push(item, details);
+			}
+			return res.type("application/json").status(200).send(JSON.stringify(output));
+		} catch (err) {
+			console.log(err.toString());
+			return res.type("text/html").status(500).send(err.toString());
+		}
+	});
+
+	app.get("/uaa2/rolecollections/", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -85,7 +165,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/rolecollections/:roleCollectionName", async (req, res) => {
+	app.get("/uaa2/rolecollections/:roleCollectionName", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -107,7 +187,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/rolecollections/:roleCollectionName/roles", async (req, res) => {
+	app.get("/uaa2/rolecollections/:roleCollectionName/roles", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -129,7 +209,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/", async (req, res) => {
+	app.get("/uaa2/apps/", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -151,7 +231,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/:appId", async (req, res) => {
+	app.get("/uaa2/apps/:appId", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -173,7 +253,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/:appId/scopes", async (req, res) => {
+	app.get("/uaa2/apps/:appId/scopes", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -195,7 +275,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/:appId/scopes/:scopeName", async (req, res) => {
+	app.get("/uaa2/apps/:appId/scopes/:scopeName", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -217,7 +297,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/:appId/authorities", async (req, res) => {
+	app.get("/uaa2/apps/:appId/authorities", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -239,7 +319,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/:appId/roletemplates", async (req, res) => {
+	app.get("/uaa2/apps/:appId/roletemplates", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -261,7 +341,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/apps/:appId/roletemplates/:templateName", async (req, res) => {
+	app.get("/uaa2/apps/:appId/roletemplates/:templateName", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -282,8 +362,8 @@ module.exports = function() {
 			return res.type("text/html").status(500).send(err.toString());
 		}
 	});
-	
-	app.get("/uaa2/apps/:appId/roletemplates/:templateName/roles/:roleName", async (req, res) => {
+
+	app.get("/uaa2/apps/:appId/roletemplates/:templateName/roles/:roleName", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -292,7 +372,8 @@ module.exports = function() {
 			let optionsInner = {
 				method: "GET",
 				json: true,
-				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/authorization/apps/" + req.params.appId + "/roletemplates/" + req.params.templateName + "/roles/"+ req.params.roleName,
+				url: JSON.parse(body).authorizationEndpoint + "/sap/rest/authorization/apps/" + req.params.appId + "/roletemplates/" + req.params.templateName +
+					"/roles/" + req.params.roleName,
 				auth: {}
 			};
 			console.log(optionsInner.url.toString());
@@ -304,8 +385,8 @@ module.exports = function() {
 			return res.type("text/html").status(500).send(err.toString());
 		}
 	});
-	
-	app.get("/uaa2/roles/", async (req, res) => {
+
+	app.get("/uaa2/roles/", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -325,9 +406,9 @@ module.exports = function() {
 			console.log(err.toString());
 			return res.type("text/html").status(500).send(err.toString());
 		}
-	});	
+	});
 
-	app.get("/uaa2/apps/:appId/roles", async (req, res) => {
+	app.get("/uaa2/apps/:appId/roles", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -348,8 +429,8 @@ module.exports = function() {
 			return res.type("text/html").status(500).send(err.toString());
 		}
 	});
-	
-	app.get("/uaa2/ownapp/", async (req, res) => {
+
+	app.get("/uaa2/ownapp/", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -371,7 +452,7 @@ module.exports = function() {
 		}
 	});
 
-	app.get("/uaa2/ownapp/usage/", async (req, res) => {
+	app.get("/uaa2/ownapp/usage/", async(req, res) => {
 		let options = {
 			url: global.__controller + "/v2/info"
 		};
@@ -393,7 +474,5 @@ module.exports = function() {
 		}
 	});
 
-
-	
 	return app;
 };
