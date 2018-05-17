@@ -22,5 +22,6 @@ module.exports = (app, server) => {
     app.use("/node/service_keys", require("./routes/service_keys")());     
     app.use("/node/user_provided_service_instances", require("./routes/user_provided_service_instances")());   
     app.use("/node/jobs", require("./routes/jobs")());  
-    app.use("/node/config", require("./routes/config")());     
+    app.use("/node/config", require("./routes/config")());  
+    app.use("/node/monitoring", require("./routes/monitoring")());        
 };
