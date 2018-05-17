@@ -7,5 +7,7 @@ module.exports = (app, server) => {
     app.use("/node/admin", require("./routes/admin")());    
     app.use("/node/organizations", require("./routes/organizations")());   
     app.use("/node/spaces", require("./routes/spaces")());   
-    app.use("/node/apps", require("./routes/apps")());     
+    app.use("/node/apps", require("./routes/apps")());    
+    app.use("/node/buildpacks", require("./routes/buildpacks")());     
+    app.use("/node/runtimes", require("./routes/runtimes")());     
 };
