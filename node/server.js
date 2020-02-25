@@ -10,7 +10,7 @@ let https = require("https");
 https.globalAgent.options.ca = xsenv.loadCertificates();
 global.__base = __dirname + "/";
 global.__controller = JSON.parse(process.env.destinations)[0].url;
-
+//global.__controller = process.env.controllerUrl
 //Initialize Express App for XSA UAA and HDBEXT Middleware
 var passport = require("passport");
 var xssec = require("@sap/xssec");
