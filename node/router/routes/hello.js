@@ -18,13 +18,13 @@ module.exports = function() {
 					<a href="${req.baseUrl}/userinfo">/userinfo</a> - Detailed User Info including Security Context</br> 
 					<a href="${req.baseUrl}/info">/info</a> - Controller Info API</br> 
 					<a href="${req.baseUrl}/getOrgs">/getOrgs</a> - Controller API: organizations</br>
-				    <a href="${req.baseUrl}/users">/users/</a> - Controller API: users</br> 
-				    <a href="${req.baseUrl}/users/<guid>">/users/guid</a> - Controller API: users, per user details</br> 
-				    <a href="${req.baseUrl}/users/uaa/name/<user_name>">/users/uaa/name/user_name</a> - UAA API: user details per ID</br> 
-				    <a href="${req.baseUrl}/users/uaa2/rolecollections/">/users/uaa2/rolecollections/</a> - UAA API: Role Collections</br> 
-				    <a href="${req.baseUrl}/users/uaa2/rolecollections/<roleCollectionName>">/users/uaa2/rolecollections/roleCollectionName</a> - UAA API: Role Collection Details</br> 
-				    <a href="${req.baseUrl}/users/uaa2/rolecollections/<roleCollectionName>/roles">/users/uaa2/rolecollections/roleCollectionName/roles</a> - UAA API: Role Collection->Role</br> `;
-				    
+					<a href="${req.baseUrl}/users">/users/</a> - Controller API: users</br> 
+					<a href="${req.baseUrl}/users/<guid>">/users/guid</a> - Controller API: users, per user details</br> 
+					<a href="${req.baseUrl}/users/uaa/name/<user_name>">/users/uaa/name/user_name</a> - UAA API: user details per ID</br> 
+					<a href="${req.baseUrl}/users/uaa2/rolecollections/">/users/uaa2/rolecollections/</a> - UAA API: Role Collections</br> 
+					<a href="${req.baseUrl}/users/uaa2/rolecollections/<roleCollectionName>">/users/uaa2/rolecollections/roleCollectionName</a> - UAA API: Role Collection Details</br> 
+					<a href="${req.baseUrl}/users/uaa2/rolecollections/<roleCollectionName>/roles">/users/uaa2/rolecollections/roleCollectionName/roles</a> - UAA API: Role Collection->Role</br> `;
+						
 		return res.type("text/html").status(200).send(output);
 	});
 
