@@ -31,6 +31,7 @@ bower_components
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
+mta_archives/
 
 # Dependency directories
 node_modules/
@@ -56,4 +57,4 @@ typings/
 
 # dotenv environment variables file
 .env
-
+default-env.json

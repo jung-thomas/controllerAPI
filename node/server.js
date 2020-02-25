@@ -3,6 +3,7 @@
 
 "use strict";
 var xsenv = require("@sap/xsenv");
+xsenv.loadEnv();
 var port = process.env.PORT || 3000;
 var server = require("http").createServer();
 let https = require("https");
@@ -27,7 +28,7 @@ passport.use("JWT", new xssec.JWTStrategy(xsenv.getServices({
 		tag: "xsuaa"
 	}
 }).uaa));
-app.use(logging.expressMiddleware(appContext));
+app.use(logging.middleware({ appContext: appContext, logNetwork: true }));
 app.use(passport.initialize());
 app.use(
 	passport.authenticate("JWT", {
