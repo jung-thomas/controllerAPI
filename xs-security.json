@@ -1,8 +1,8 @@
 {
-    "xsappname": "controllerAPIEx",
+    "xsappname": "controller-api",
     "foreign-scope-references":["$ACCEPT_GRANTED_SCOPES"],
     "scopes": [
-    	{ 
+        { 
             "name": "xs_user.read",
             "description": "read user data"
         },
@@ -18,7 +18,7 @@
             "name": "idps.write",
             "description": "write only scopes to retrieve identity providers"
         }, 
-	   { 
+       { 
             "name": "cloud_controller.read",
             "description": "read access for controller"
         },
@@ -62,7 +62,7 @@
             "name": "AuthorizationDisplay",
             "description": "Template for Authorization display",
             "scope-references": [
-		"idps.read",
+            "idps.read",
                 "xs_authorization.read"
             ]
         },
@@ -70,8 +70,8 @@
             "name": "AuthorizationAdmin",
             "description": "Template for Authorization admin",
             "scope-references": [
-			"idps.read",
-			"idps.write",
+            "idps.read",
+            "idps.write",
                 "xs_authorization.read",
                 "xs_authorization.write"
             ]
