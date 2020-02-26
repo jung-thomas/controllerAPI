@@ -43,10 +43,11 @@ modules:
         forwardAuthToken: true
 
 resources:
+# Use:
+# xs create-service xsuaa space controller-api-ex-uaa -c xs-security.json
+# to create the UAA before deploying the MTA or starting the node and web module in Web IDE
  - name: controller-api-ex-uaa
-   type: com.sap.xs.uaa
-   parameters:
-     config-path: ./xs-security.json
+   type: org.cloudfoundry.existing-service
  - name: controller-config
    properties:
      url: ${controller-url} #"${controller-url}" # - Removed for testing in Web IDE, replace for real deployment
